@@ -1,5 +1,12 @@
 # OneBot QQ Bot (Standalone)
 
+写在前面的人话：本来使用的qqbot是openclaw+本地反代agy的做法，但是agy已经封了我两个账号理由都是反代。所以想到了直接改造原生agy作为qqbot后端的想法，实现了和之前 https://github.com/kiddy-he/elysia_bot-openclaw 一样的效果。可能不能直接使用，但是交给你的agent参考一下改造思路是可以的，这种方案我估计不容易被封，如果还是被封了我会在这里告知。
+
+最后：
+哈吉米王朝了
+
+以下由argon与astra联合编写：
+
 这是一个基于 Node.js 的 QQ 机器人服务，通过 OneBot v11 协议对接 LLBot，支持私聊和群聊。它可以独立运行在 Linux 主机上，不需要额外部署 OpenClaw 网关。
 
 在模型分工上，日常对话正文由本地的 Antigravity CLI（`agy`）通过 ACP 会话生成；意图分类、回复审查和异常兜底等轻量任务则走 Gemini 官方 HTTP API。权限控制、角色工作区、定时任务和消息回执都由本服务统一管理。
