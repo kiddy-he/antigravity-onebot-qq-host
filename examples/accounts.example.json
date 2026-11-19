@@ -1,0 +1,15 @@
+{
+  "gatewayPort": 18789,
+  "cliModel": "YOUR_CLI_MODEL_ID",
+  "geminiModel": "YOUR_GEMINI_API_MODEL_ID",
+  "accounts": [{
+    "id": "default",
+    "name": "QQ 助手",
+    "selfId": "YOUR_BOT_QQ",
+    "privateAdminIds": ["YOUR_QQ"],
+    "groupIds": [],
+    "wsUrl": "ws://127.0.0.1:3001",
+    "httpUrl": "http://127.0.0.1:3002",
+    "tokenEnv": "ONEBOT_ACCESS_TOKEN"
+  }]
+}

@@ -1,0 +1,510 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task AI routing version 1",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "revision": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "providers": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/provider"
+      }
+    },
+    "deployments": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/deployment"
+      }
+    },
+    "routes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/route"
+      }
+    },
+    "tasks": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/task"
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      }
+    },
+    "bindings": {
+      "type": "object"
+    },
+    "workflows": {
+      "type": "object"
+    },
+    "registry": {
+      "type": "object"
+    },
+    "extensions": {
+      "type": "object",
+      "properties": {
+        "inboundIntentShadow": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "sampleRate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "maxConcurrent": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "maxPerMinute": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "maxPerDay": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            },
+            "retentionDays": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 90
+            },
+            "maxDailyBytes": {
+              "type": "integer",
+              "minimum": 4096,
+              "maximum": 104857600
+            }
+          },
+          "additionalProperties": false
+        },
+        "inboundIntentDecision": {
+          "type": "object",
+          "properties": {
+            "minConfidence": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 0.99
+            }
+          },
+          "additionalProperties": false
+        },
+        "conversationProjection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "idleMs": {
+              "type": "integer",
+              "minimum": 60000,
+              "maximum": 86400000
+            },
+            "keepRecentTurns": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20
+            },
+            "toolMinChars": {
+              "type": "integer",
+              "minimum": 2000,
+              "maximum": 100000
+            },
+            "toolExcerptChars": {
+              "type": "integer",
+              "minimum": 500,
+              "maximum": 10000
+            },
+            "sharedMaxBytes": {
+              "type": "integer",
+              "minimum": 24000,
+              "maximum": 500000
+            },
+            "maxScopes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 512
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "revision",
+    "enabled",
+    "providers",
+    "deployments",
+    "routes",
+    "tasks"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "maxOutputTokens": {},
+        "temperature": {},
+        "thinking": {},
+        "responseFormat": {},
+        "nativeSearch": {},
+        "topP": {},
+        "extra": {},
+        "size": {},
+        "quality": {},
+        "output_format": {},
+        "partial_images": {},
+        "stream": {},
+        "n": {},
+        "imageTool": {},
+        "operation": {}
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "credential": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "retry": {
+      "type": "object",
+      "properties": {
+        "maxRetries": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "delayMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60000
+        },
+        "on": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "maxRetries"
+      ],
+      "additionalProperties": false
+    },
+    "transport": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "direct",
+            "proxy",
+            "environment"
+          ]
+        },
+        "proxyUrl": {
+          "type": "string"
+        },
+        "family": {
+          "enum": [
+            4,
+            6
+          ]
+        },
+        "tlsVerify": {
+          "const": true
+        },
+        "caFile": {
+          "type": "string"
+        },
+        "serverName": {
+          "type": "string"
+        },
+        "connectTimeoutMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600000
+        },
+        "maxResponseBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 33554432
+        },
+        "certificateSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "requestTimeoutMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600000
+        },
+        "allowPartialTrustChain": {
+          "type": "boolean",
+          "default": false,
+          "description": "Trust a configured intermediate or leaf certificate as a trust anchor. Requires caFile; certificate validity and hostname verification remain enabled."
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "provider": {
+      "type": "object",
+      "properties": {
+        "adapter": {
+          "enum": [
+            "antigravity-cli",
+            "openai-chat",
+            "openai-responses",
+            "anthropic-messages",
+            "gemini-native",
+            "images",
+            "local-tts",
+            "gemini-decisions"
+          ]
+        },
+        "baseUrl": {
+          "type": "string"
+        },
+        "credential": {
+          "$ref": "#/$defs/credential"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "transport": {
+          "$ref": "#/$defs/transport"
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        },
+        "registryId": {
+          "type": "string"
+        },
+        "models": {},
+        "api": {
+          "type": "string"
+        },
+        "authHeader": {
+          "type": "string"
+        },
+        "authPrefix": {
+          "type": "string"
+        }
+      },
+      "allOf": [{
+        "if": {"properties": {"adapter": {"const": "antigravity-cli"}}},
+        "then": {"propertyNames": {"enum": ["adapter", "registryId", "parameters"]}}
+      }],
+      "required": [
+        "adapter"
+      ],
+      "additionalProperties": false
+    },
+    "deployment": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "text",
+              "json",
+              "vision",
+              "tools",
+              "nativeSearch",
+              "image",
+              "stream",
+              "tts"
+            ]
+          }
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000000
+          }
+        },
+        "thinking": {
+          "type": "string"
+        },
+        "compat": {
+          "type": "object"
+        },
+        "resources": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "provider",
+        "model",
+        "capabilities"
+      ],
+      "additionalProperties": false
+    },
+    "step": {
+      "type": "object",
+      "properties": {
+        "deployment": {
+          "type": "string"
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600000
+        },
+        "retry": {
+          "$ref": "#/$defs/retry"
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        },
+        "thinking": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "deployment",
+        "timeoutMs"
+      ],
+      "additionalProperties": false
+    },
+    "route": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/step"
+          }
+        },
+        "budgetMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600000
+        },
+        "fallbackOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stopOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "steps",
+        "budgetMs",
+        "fallbackOn"
+      ],
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "route": {
+          "type": "string"
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validator": {
+          "type": "string"
+        },
+        "inputPolicy": {
+          "type": "object",
+          "properties": {
+            "maxBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000000
+            },
+            "maxTokens": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000000
+            },
+            "imageTokens": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000000
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "$ref": "#/$defs/parameters"
+        }
+      },
+      "required": [
+        "enabled",
+        "route",
+        "requires"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

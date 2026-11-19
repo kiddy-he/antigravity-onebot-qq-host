@@ -1,0 +1,17 @@
+[Unit]
+Description=Standalone QQ OneBot host
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/src/antigravity-onebot-qq-host
+Environment=ONEBOT_CONFIG_ROOT=%h/.config/onebot-qq
+EnvironmentFile=%h/.config/onebot-qq/environment
+ExecStart=/usr/bin/env node scripts/standalone-onebot.mjs serve
+UMask=0077
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=90
+
+[Install]
+WantedBy=default.target

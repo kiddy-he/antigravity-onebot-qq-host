@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "enabled": false,
+  "python": "/srv/qqbot/state/sharemarket/.venv/bin/python",
+  "sourceRoot": "/opt/onebot-qq/integrations/sharemarket",
+  "stateRoot": "/srv/qqbot/state/sharemarket",
+  "privateMarket": "shared",
+  "privateQueries": true,
+  "groups": {},
+  "markets": {
+    "shared": {
+      "enabled": true,
+      "options": {
+        "rules": {
+          "market_mode": "247",
+          "day_seconds": 1200,
+          "tick_seconds": 3
+        },
+        "features": {
+          "ipo": true,
+          "margin": true,
+          "props": true,
+          "season": false,
+          "quests": true
+        },
+        "npcTrading": true,
+        "retentionDays": 90,
+        "artifactRetentionHours": 24,
+        "modelVersion": "causal-v2"
+      }
+    }
+  },
+  "announcements": {},
+  "news": {
+    "enabled": false,
+    "settings": {
+      "pollSeconds": 3,
+      "normalIntervalSeconds": 300,
+      "urgentIntervalSeconds": 60,
+      "quietSeconds": 45,
+      "maxDeferralSeconds": 180,
+      "maxPerHour": 8,
+      "maxItems": 4,
+      "maxAgeSeconds": 1800
+    },
+    "routes": {}
+  }
+}
